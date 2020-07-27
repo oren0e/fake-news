@@ -86,3 +86,6 @@ df_prog_label = df_plot.groupby('num_date')['label'].apply(lambda x: sum(x==1)).
 df_prog_label
 sns.lineplot(x='num_date', y='label', data=df_prog_label)
 plt.show()
+
+# save df_plot to pickle
+pd.to_pickle(df_plot, './data/df.pkl')
