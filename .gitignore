@@ -139,3 +139,6 @@ dmypy.json
 # zip
 *.zip
 *.gzip
+
+# code files
+initial_code/eda.py
