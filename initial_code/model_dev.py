@@ -16,6 +16,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing import sequence
 from tensorflow.keras import models, layers
 from tensorflow.keras.metrics import Precision, Recall, AUC
+from tensorflow.keras.callbacks import EarlyStopping
 
 pd.set_option('expand_frame_repr', False)  # To view all the variables in the console
 
@@ -75,7 +76,7 @@ print('Shape of test label tensor: ', y_test.shape)
 
 # spit to train and val sets
 seqs_x_train, seqs_x_val, seqs_y_train, seqs_y_val = train_test_split(seqs_train, y_train,
-                                                    test_size=0.2, random_state=SEED, stratify=y_train)
+                                                    test_size=0.2, random_state=SEED)
 
 # Dense network as a quick starter
 input_tensor = layers.Input((maxlen,))
@@ -88,7 +89,7 @@ model.summary()
 
 model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['acc', Precision(), Recall(), AUC()])
 history = model.fit(seqs_x_train, seqs_y_train, epochs=30, batch_size=32,
-                    validation_data=(seqs_x_val, seqs_y_val))
+                    validation_data=(seqs_x_val, seqs_y_val), callbacks=[EarlyStopping(patience=5)])
 
 # plot performance
 acc = history.history['acc']
