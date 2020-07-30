@@ -29,6 +29,12 @@ df.head()
 # how many subjects are there
 df['subject'].value_counts()
 
+# how many topics in fake and true
+df.head()
+sns.countplot(x='subject', data=df, hue='label')
+plt.xticks(rotation=45)
+plt.show()
+
 # TODO:
 #   1. date should be a numeric field
 #   2. subjects should be encoded into categories with a missing category as well for unseen categories
