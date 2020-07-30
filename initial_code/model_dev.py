@@ -16,7 +16,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing import sequence
 from tensorflow.keras import models, layers
 from tensorflow.keras.metrics import Precision, Recall, AUC
-from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.callbacks import EarlyStopping, History
 from tensorflow.keras.regularizers import l2
 
 pd.set_option('expand_frame_repr', False)  # To view all the variables in the console
@@ -77,7 +77,7 @@ print('Shape of test label tensor: ', y_test.shape)
 
 # spit to train and val sets
 seqs_x_train, seqs_x_val, seqs_y_train, seqs_y_val = train_test_split(seqs_train, y_train,
-                                                    test_size=0.2, random_state=SEED)
+                                                    test_size=0.3, random_state=1340, shuffle=True)
 
 # Dense network as a quick starter
 input_tensor = layers.Input((maxlen,))
@@ -95,7 +95,7 @@ history = model.fit(seqs_x_train, seqs_y_train, epochs=30, batch_size=32,
                                                                                        restore_best_weights=True)])
 
 # plot performance
-def plot_performance(history) -> None:
+def plot_performance(history: History) -> None:
     acc = history.history['acc']
     val_acc = history.history['val_acc']
     loss = history.history['loss']
@@ -103,6 +103,8 @@ def plot_performance(history) -> None:
     auc = history.history['auc']
     val_auc = history.history['val_auc']
     epochs = range(1, len(acc) + 1)
+
+    plt.figure()
 
     plt.plot(epochs, acc, 'bo', label='Training accuracy')
     plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
@@ -131,6 +133,7 @@ def plot_performance(history) -> None:
 
     plt.show()
 
+plot_performance(history)
 
 model.evaluate(seqs_test, y_test)
 
@@ -145,3 +148,6 @@ model.summary()
 model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['acc', Precision(), Recall(), AUC()])
 history = model.fit(seqs_x_train, seqs_y_train, epochs=30, batch_size=32,
                     validation_data=(seqs_x_val, seqs_y_val))
+plot_performance(history)
+
+model.evaluate(seqs_test, y_test)
