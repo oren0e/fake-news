@@ -83,7 +83,7 @@ seqs_x_train, seqs_x_val, seqs_y_train, seqs_y_val = train_test_split(seqs_train
 input_tensor = layers.Input((maxlen,))
 kmodel = layers.Embedding(max_features, emb_dim)(input_tensor)
 kmodel = layers.Flatten()(kmodel)
-kmodel = layers.Dense(64, activation='relu', kernel_regularizer=l2(0.005))(kmodel)
+kmodel = layers.Dense(24, activation='relu', kernel_regularizer=l2(0.005))(kmodel)
 kmodel = layers.Dropout(0.5)(kmodel)
 output_tensor = layers.Dense(1, activation='sigmoid')(kmodel)
 model = models.Model(input_tensor, output_tensor)
@@ -98,8 +98,8 @@ acc = history.history['acc']
 val_acc = history.history['val_acc']
 loss = history.history['loss']
 val_loss = history.history['val_loss']
-auc = history.history['auc']
-val_auc = history.history['val_auc']
+auc = history.history['auc_2']
+val_auc = history.history['val_auc_2']
 epochs = range(1, len(acc) + 1)
 
 plt.plot(epochs, acc, 'bo', label='Training accuracy')
@@ -111,15 +111,17 @@ plt.legend()
 
 plt.figure()
 
-plt.plot(epochs, acc, 'ro', label='Training AUC')
-plt.plot(epochs, val_acc, 'r', label='Validation AUC')
+plt.plot(epochs, auc, 'ro', label='Training AUC')
+plt.plot(epochs, val_auc, 'r', label='Validation AUC')
 plt.xlabel('Epochs')
 plt.ylabel('AUC')
 plt.title('Training and Validation AUC')
 plt.legend()
 
-plt.plot(epochs, acc, 'go', label='Training loss')
-plt.plot(epochs, val_acc, 'g', label='Validation loss')
+plt.figure()
+
+plt.plot(epochs, loss, 'go', label='Training loss')
+plt.plot(epochs, val_loss, 'g', label='Validation loss')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.title('Training and Validation Loss')
