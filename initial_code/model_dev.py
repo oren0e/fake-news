@@ -95,40 +95,42 @@ history = model.fit(seqs_x_train, seqs_y_train, epochs=30, batch_size=32,
                                                                                        restore_best_weights=True)])
 
 # plot performance
-acc = history.history['acc']
-val_acc = history.history['val_acc']
-loss = history.history['loss']
-val_loss = history.history['val_loss']
-auc = history.history['auc_4']
-val_auc = history.history['val_auc_4']
-epochs = range(1, len(acc) + 1)
+def plot_performance(history) -> None:
+    acc = history.history['acc']
+    val_acc = history.history['val_acc']
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
+    auc = history.history['auc']
+    val_auc = history.history['val_auc']
+    epochs = range(1, len(acc) + 1)
 
-plt.plot(epochs, acc, 'bo', label='Training accuracy')
-plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
-plt.xlabel('Epochs')
-plt.ylabel('Accuracy')
-plt.title('Training and Validation Accuracy')
-plt.legend()
+    plt.plot(epochs, acc, 'bo', label='Training accuracy')
+    plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
+    plt.xlabel('Epochs')
+    plt.ylabel('Accuracy')
+    plt.title('Training and Validation Accuracy')
+    plt.legend()
 
-plt.figure()
+    plt.figure()
 
-plt.plot(epochs, auc, 'ro', label='Training AUC')
-plt.plot(epochs, val_auc, 'r', label='Validation AUC')
-plt.xlabel('Epochs')
-plt.ylabel('AUC')
-plt.title('Training and Validation AUC')
-plt.legend()
+    plt.plot(epochs, auc, 'ro', label='Training AUC')
+    plt.plot(epochs, val_auc, 'r', label='Validation AUC')
+    plt.xlabel('Epochs')
+    plt.ylabel('AUC')
+    plt.title('Training and Validation AUC')
+    plt.legend()
 
-plt.figure()
+    plt.figure()
 
-plt.plot(epochs, loss, 'go', label='Training loss')
-plt.plot(epochs, val_loss, 'g', label='Validation loss')
-plt.xlabel('Epochs')
-plt.ylabel('Loss')
-plt.title('Training and Validation Loss')
-plt.legend()
+    plt.plot(epochs, loss, 'go', label='Training loss')
+    plt.plot(epochs, val_loss, 'g', label='Validation loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.title('Training and Validation Loss')
+    plt.legend()
 
-plt.show()
+    plt.show()
+
 
 model.evaluate(seqs_test, y_test)
 
