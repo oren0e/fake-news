@@ -17,6 +17,7 @@ from tensorflow.keras.preprocessing import sequence
 from tensorflow.keras import models, layers
 from tensorflow.keras.metrics import Precision, Recall, AUC
 from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.regularizers import l2
 
 pd.set_option('expand_frame_repr', False)  # To view all the variables in the console
 
@@ -82,14 +83,15 @@ seqs_x_train, seqs_x_val, seqs_y_train, seqs_y_val = train_test_split(seqs_train
 input_tensor = layers.Input((maxlen,))
 kmodel = layers.Embedding(max_features, emb_dim)(input_tensor)
 kmodel = layers.Flatten()(kmodel)
-kmodel = layers.Dense(64, activation='relu')(kmodel)
+kmodel = layers.Dense(64, activation='relu', kernel_regularizer=l2(0.005))(kmodel)
+kmodel = layers.Dropout(0.5)(kmodel)
 output_tensor = layers.Dense(1, activation='sigmoid')(kmodel)
 model = models.Model(input_tensor, output_tensor)
 model.summary()
 
 model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['acc', Precision(), Recall(), AUC()])
 history = model.fit(seqs_x_train, seqs_y_train, epochs=30, batch_size=32,
-                    validation_data=(seqs_x_val, seqs_y_val), callbacks=[EarlyStopping(patience=5)])
+                    validation_data=(seqs_x_val, seqs_y_val))
 
 # plot performance
 acc = history.history['acc']
@@ -115,6 +117,16 @@ plt.xlabel('Epochs')
 plt.ylabel('AUC')
 plt.title('Training and Validation AUC')
 plt.legend()
+
+plt.plot(epochs, acc, 'go', label='Training loss')
+plt.plot(epochs, val_acc, 'g', label='Validation loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('Training and Validation Loss')
+plt.legend()
+
 plt.show()
 
-model.evaluate(seqs_test, y_test)
+#model.evaluate(seqs_test, y_test)
+
+# LSTM
