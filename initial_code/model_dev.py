@@ -91,15 +91,16 @@ model.summary()
 
 model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['acc', Precision(), Recall(), AUC()])
 history = model.fit(seqs_x_train, seqs_y_train, epochs=30, batch_size=32,
-                    validation_data=(seqs_x_val, seqs_y_val))
+                    validation_data=(seqs_x_val, seqs_y_val), callbacks=[EarlyStopping(patience=15,
+                                                                                       restore_best_weights=True)])
 
 # plot performance
 acc = history.history['acc']
 val_acc = history.history['val_acc']
 loss = history.history['loss']
 val_loss = history.history['val_loss']
-auc = history.history['auc_2']
-val_auc = history.history['val_auc_2']
+auc = history.history['auc_3']
+val_auc = history.history['val_auc_3']
 epochs = range(1, len(acc) + 1)
 
 plt.plot(epochs, acc, 'bo', label='Training accuracy')
