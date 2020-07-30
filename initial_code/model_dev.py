@@ -62,7 +62,6 @@ tokenizer.fit_on_texts(X_train['text'].values)
 seqs_train = tokenizer.texts_to_sequences(X_train['text'].values)
 print(f'Found {len(tokenizer.word_index)} unique tokens in train')
 
-tokenizer.fit_on_texts(X_test['text'].values)
 seqs_test = tokenizer.texts_to_sequences(X_test['text'].values)
 print(f'Found {len(tokenizer.word_index)} unique tokens in test')
 
