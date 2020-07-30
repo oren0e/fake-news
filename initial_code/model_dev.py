@@ -87,19 +87,22 @@ output_tensor = layers.Dense(1, activation='sigmoid')(kmodel)
 model = models.Model(input_tensor, output_tensor)
 model.summary()
 
-model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['acc', Precision(), Recall(), AUC()])
+model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['acc',
+                                                                        Precision(name='Precision'),
+                                                                        Recall(name='Recall'),
+                                                                        AUC(name='AUC')])
 history = model.fit(seqs_x_train, seqs_y_train, epochs=30, batch_size=32,
                     validation_data=(seqs_x_val, seqs_y_val), callbacks=[EarlyStopping(patience=15,
                                                                                        restore_best_weights=True)])
 
 # plot performance
-def plot_performance(history: History, title: Optional[str]) -> None:
+def plot_performance(history: History, title: Optional[str] = None) -> None:
     acc = history.history['acc']
     val_acc = history.history['val_acc']
     loss = history.history['loss']
     val_loss = history.history['val_loss']
-    auc = history.history['auc_1']
-    val_auc = history.history['val_auc_1']
+    auc = history.history['auc']
+    val_auc = history.history['val_auc']
     epochs = range(1, len(acc) + 1)
 
     plt.figure()
@@ -131,7 +134,7 @@ def plot_performance(history: History, title: Optional[str]) -> None:
 
     plt.show()
 
-plot_performance(history)
+plot_performance(history, title='Dense')
 
 model.evaluate(seqs_test, y_test)
 
@@ -148,7 +151,14 @@ model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['acc',
                                                                         Recall(name='Recall'),
                                                                         AUC(name='auc')])
 history = model.fit(seqs_x_train, seqs_y_train, epochs=20, batch_size=32,
-                    validation_data=(seqs_x_val, seqs_y_val))
+                    validation_data=(seqs_x_val, seqs_y_val), callbacks=[EarlyStopping(patience=15,
+                                                                                       restore_best_weights=True)])
 plot_performance(history, title='LSTM')
 
 model.evaluate(seqs_test, y_test)
+
+'''
+LSTM is better but it is more compute-intensive.
+We will use LSTM but we will need an instance with GPU
+support on the cloud in order to use it.
+'''
