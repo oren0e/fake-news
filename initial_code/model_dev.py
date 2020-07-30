@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from typing import Tuple
+from typing import Tuple, Optional
 
 import string
 
@@ -57,12 +57,11 @@ emb_dim = 100
 # X_train['text'] = X_train['text'].apply(text_process)   # slow!
 
 # get numbered representation of the corpus
-tokenizer = Tokenizer(num_words=max_features)
+tokenizer = Tokenizer(num_words=max_features, oov_token=True)
 tokenizer.fit_on_texts(X_train['text'].values)
 seqs_train = tokenizer.texts_to_sequences(X_train['text'].values)
 print(f'Found {len(tokenizer.word_index)} unique tokens in train')
 
-tokenizer = Tokenizer(num_words=max_features)
 tokenizer.fit_on_texts(X_test['text'].values)
 seqs_test = tokenizer.texts_to_sequences(X_test['text'].values)
 print(f'Found {len(tokenizer.word_index)} unique tokens in test')
@@ -95,13 +94,13 @@ history = model.fit(seqs_x_train, seqs_y_train, epochs=30, batch_size=32,
                                                                                        restore_best_weights=True)])
 
 # plot performance
-def plot_performance(history: History) -> None:
+def plot_performance(history: History, title: Optional[str]) -> None:
     acc = history.history['acc']
     val_acc = history.history['val_acc']
     loss = history.history['loss']
     val_loss = history.history['val_loss']
-    auc = history.history['auc']
-    val_auc = history.history['val_auc']
+    auc = history.history['auc_1']
+    val_auc = history.history['val_auc_1']
     epochs = range(1, len(acc) + 1)
 
     plt.figure()
@@ -110,7 +109,7 @@ def plot_performance(history: History) -> None:
     plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
     plt.xlabel('Epochs')
     plt.ylabel('Accuracy')
-    plt.title('Training and Validation Accuracy')
+    plt.title(f'Training and Validation Accuracy\n{title}')
     plt.legend()
 
     plt.figure()
@@ -119,7 +118,7 @@ def plot_performance(history: History) -> None:
     plt.plot(epochs, val_auc, 'r', label='Validation AUC')
     plt.xlabel('Epochs')
     plt.ylabel('AUC')
-    plt.title('Training and Validation AUC')
+    plt.title(f'Training and Validation AUC\n{title}')
     plt.legend()
 
     plt.figure()
@@ -128,7 +127,7 @@ def plot_performance(history: History) -> None:
     plt.plot(epochs, val_loss, 'g', label='Validation loss')
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
-    plt.title('Training and Validation Loss')
+    plt.title(f'Training and Validation Loss\n{title}')
     plt.legend()
 
     plt.show()
@@ -140,14 +139,17 @@ model.evaluate(seqs_test, y_test)
 # LSTM
 input_tensor = layers.Input((maxlen,))
 kmodel = layers.Embedding(max_features, emb_dim)(input_tensor)
-kmodel = layers.LSTM(32, dropout=0.5)(kmodel)
+kmodel = layers.LSTM(32, dropout=0.1, kernel_regularizer=l2(0.01))(kmodel)
 output_tensor = layers.Dense(1, activation='sigmoid')(kmodel)
 model = models.Model(input_tensor, output_tensor)
 model.summary()
 
-model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['acc', Precision(), Recall(), AUC()])
-history = model.fit(seqs_x_train, seqs_y_train, epochs=30, batch_size=32,
+model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['acc',
+                                                                        Precision(name='Precision'),
+                                                                        Recall(name='Recall'),
+                                                                        AUC(name='auc')])
+history = model.fit(seqs_x_train, seqs_y_train, epochs=20, batch_size=32,
                     validation_data=(seqs_x_val, seqs_y_val))
-plot_performance(history)
+plot_performance(history, title='LSTM')
 
 model.evaluate(seqs_test, y_test)
