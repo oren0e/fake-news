@@ -99,8 +99,8 @@ acc = history.history['acc']
 val_acc = history.history['val_acc']
 loss = history.history['loss']
 val_loss = history.history['val_loss']
-auc = history.history['auc_3']
-val_auc = history.history['val_auc_3']
+auc = history.history['auc_4']
+val_auc = history.history['val_auc_4']
 epochs = range(1, len(acc) + 1)
 
 plt.plot(epochs, acc, 'bo', label='Training accuracy')
@@ -130,6 +130,16 @@ plt.legend()
 
 plt.show()
 
-#model.evaluate(seqs_test, y_test)
+model.evaluate(seqs_test, y_test)
 
 # LSTM
+input_tensor = layers.Input((maxlen,))
+kmodel = layers.Embedding(max_features, emb_dim)(input_tensor)
+kmodel = layers.LSTM(32, dropout=0.5)(kmodel)
+output_tensor = layers.Dense(1, activation='sigmoid')(kmodel)
+model = models.Model(input_tensor, output_tensor)
+model.summary()
+
+model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['acc', Precision(), Recall(), AUC()])
+history = model.fit(seqs_x_train, seqs_y_train, epochs=30, batch_size=32,
+                    validation_data=(seqs_x_val, seqs_y_val))
