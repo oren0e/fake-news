@@ -162,3 +162,5 @@ LSTM is better but it is more compute-intensive.
 We will use LSTM but we will need an instance with GPU
 support on the cloud in order to use it.
 '''
+
+# save model and tokenizer
