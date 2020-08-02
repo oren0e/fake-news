@@ -144,3 +144,7 @@ data/
 
 # code files
 initial_code/eda.py
+
+# logs
+**/logs/
+logs/

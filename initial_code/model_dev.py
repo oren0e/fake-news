@@ -171,6 +171,7 @@ model.save('./data/fake_news_keras.h5', save_format='h5')
 with open('./data/tokenizer.pickle', 'wb') as f:
     pickle.dump(tokenizer, f, protocol=pickle.HIGHEST_PROTOCOL)
 
+# test prediction process
 model = models.load_model('./data/fake_news_keras.h5')
 
 a = np.array(tokenizer.texts_to_sequences(np.array(['this is outrageous, trump is dead!'])))

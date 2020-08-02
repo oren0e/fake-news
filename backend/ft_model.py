@@ -22,7 +22,7 @@ class NNClassifier:
         self.raw_text = text
         self._model: Optional[models.Model] = None
         self._tokenizer: Optional[Tokenizer] = None
-        common.logger.info(f'NNClassifier init with parameters: text = {self.raw_text}')
+        common.logger.info(f'NNClassifier initialized')
 
     @property
     def _model_path(self) -> str:
@@ -51,5 +51,6 @@ class NNClassifier:
 
     def predict(self) -> None:
         seq = self._preprocess()
+        pred = self._model.predict(seq)
         print('The model predicts this news piece to be fake with a '
-              '{:.3f} percent confidence'.format(seq[0][0] * 100))
+              '{:.3f} percent confidence'.format(pred[0][0] * 100))

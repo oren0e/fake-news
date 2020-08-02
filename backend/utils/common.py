@@ -23,4 +23,3 @@ logger.setLevel(logging.INFO)
 fileHandler = logging.FileHandler(LOG_FILEPATH)
 fileHandler.setFormatter(logFormat)
 logger.addHandler(fileHandler)
-
