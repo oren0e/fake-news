@@ -6,6 +6,8 @@ from typing import Tuple, Optional
 
 import string
 
+import pickle
+
 import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
@@ -164,3 +166,14 @@ support on the cloud in order to use it.
 '''
 
 # save model and tokenizer
+model.save('./data/fake_news_keras.h5', save_format='h5')
+
+with open('./data/tokenizer.pickle', 'wb') as f:
+    pickle.dump(tokenizer, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+model = models.load_model('./data/fake_news_keras.h5')
+
+a = np.array(tokenizer.texts_to_sequences(np.array(['this is outrageous, trump is dead!'])))
+a1 = sequence.pad_sequences(a, maxlen=maxlen)
+pred = model.predict(a1)
+print('The model predicts this news to be fake with a {:.3f} percent confidence'.format(pred[0][0]*100))
