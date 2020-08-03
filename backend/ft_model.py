@@ -41,7 +41,7 @@ class NNClassifier:
 
         with open('./data/tokenizer.pickle', 'rb') as f:
             self._tokenizer = pickle.load(f)
-        common.logger.info(f'Tokenizer loaded successfully from {self._model_path}')
+        common.logger.info(f'Tokenizer loaded successfully')
 
     @property
     def model(self) -> models.Model:
@@ -49,8 +49,7 @@ class NNClassifier:
             self.load_model()
         return self._model
 
-    def predict(self) -> None:
+    def predict(self) -> str:
         seq = self._preprocess()
         pred = self._model.predict(seq)
-        print('The model predicts this news piece to be fake with a '
-              '{:.3f} percent confidence'.format(pred[0][0] * 100))
+        return 'The model predicts this news piece to be fake with a {:.3f} percent confidence'.format(pred[0][0] * 100)
