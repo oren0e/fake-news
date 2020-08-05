@@ -21,6 +21,9 @@ a web page to serve the predictions.
 
 
 ## TODO
-1. Front-end work: make a web page with a text box to paste the news story and a predict button  
-   1.1 Deploy to Heroku
+1. Deploy to Heroku
+2. Front-end work
+    2.1 Make a web page with a text box to paste the news story and a predict button
+    2.2 Once the model returns the `str` answer, it should be displayed in a designated place
+        on the page (maybe an answer section)  
 2. Improve logging
