@@ -24,7 +24,7 @@ export default function Home() {
       })
       .then(function (response) {
         // assumes that response is a number between 0.0-1.0
-        setAnalyzeResult(response);
+        setAnalyzeResult(response.data.result);
       })
       .catch(function (error) {
         setIsSubmitting(false);
