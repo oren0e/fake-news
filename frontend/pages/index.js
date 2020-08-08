@@ -19,7 +19,7 @@ export default function Home() {
 
     // TODO: add the correct endpoint.
     axios
-      .post('/analyze', {
+      .post('http://localhost:9000/predict', {
         text,
       })
       .then(function (response) {
