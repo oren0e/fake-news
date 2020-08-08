@@ -4,11 +4,7 @@ from backend.ft_model import NNClassifier
 
 PORT: int = 9000
 
-app = Flask(__name__, static_folder='./frontend')
-
-@app.route('/')
-def index_page():
-    return send_from_directory(app.static_folder, 'index.html')
+app = Flask(__name__)
 
 @app.route('/predict', methods=['POST'])
 def make_prediction() -> dict:
