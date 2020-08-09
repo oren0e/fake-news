@@ -1,10 +1,9 @@
-import { useState } from 'react';
-import Head from 'next/head';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 import { Textarea, Text, Button, Box } from '@chakra-ui/core';
 
-export default function Home() {
+function App() {
   const [text, setText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [analyzeResult, setAnalyzeResult] = useState(null);
@@ -19,28 +18,21 @@ export default function Home() {
 
     // TODO: add the correct endpoint.
     axios
-      .post('/api/predict', {
+      .post('/predict', {
         text,
       })
       .then(function (response) {
-        if (response.data.success) {
-          // assumes that response is a number between 0.0-1.0
-          setAnalyzeResult(response.data.result);
-        } else {
-          // TOOD: handle errors
-          console.log(response.data.errorMessage);
-        }
+        // assumes that response is a number between 0.0-1.0
+        setAnalyzeResult(response.data.result);
+        setIsSubmitting(false);
+      })
+      .catch(function (error) {
         setIsSubmitting(false);
       });
   };
 
   return (
     <Box maxW="960px" mx="auto" padding="15px">
-      <Head>
-        <title>Fake News</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <Text fontSize="5xl" as="h1">
         Welcome to Fake News
       </Text>
@@ -78,3 +70,5 @@ export default function Home() {
     </Box>
   );
 }
+
+export default App;
