@@ -52,4 +52,4 @@ class NNClassifier:
     def predict(self) -> float:
         seq = self._preprocess()
         pred = self._model.predict(seq)
-        return round(float(pred[0][0]), 3) * 100
+        return round(float(pred[0][0]), 3)
