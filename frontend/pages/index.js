@@ -19,16 +19,18 @@ export default function Home() {
 
     // TODO: add the correct endpoint.
     axios
-      .post('/predict', {
+      .post('/api/predict', {
         text,
       })
       .then(function (response) {
-        // assumes that response is a number between 0.0-1.0
-        setAnalyzeResult(response.data.result);
-      })
-      .catch(function (error) {
+        if (response.data.success) {
+          // assumes that response is a number between 0.0-1.0
+          setAnalyzeResult(response.data.result);
+        } else {
+          // TOOD: handle errors
+          console.log(response.data.errorMessage);
+        }
         setIsSubmitting(false);
-        console.log(error);
       });
   };
 
@@ -61,6 +63,7 @@ export default function Home() {
           isLoading={isSubmitting}
           loadingText="Analyzing..."
           onClick={handleOnClick}
+          disabled={text.length === 0}
         >
           Analyze text
         </Button>
