@@ -4,6 +4,9 @@ from io import BytesIO
 
 import numpy as np
 
+import contextlib
+import h5py
+
 from typing import Optional
 
 from backend.utils import common, s3_settings
@@ -44,20 +47,47 @@ class NNClassifier:
     #         self._tokenizer = pickle.load(f)
     #     common.logger.info(f'Tokenizer loaded successfully')
 
-    def load_model_from_s3(self):
+    def load_model_from_s3(self) -> None:
         model_file: str = f'{self.MODEL_NAME}.h5'
         tokenizer_file: str = 'tokenizer.pickle'
+        model_obj = self.s3_resource.Object(s3_settings.S3_BUCKET, model_file).get()['Body'].read()
+        tokenizer_obj = self.s3_resource.Object(s3_settings.S3_BUCKET, tokenizer_file).get()['Body'].read()
+
+        def helper_settings(body):
+            file_access_property_list = h5py.h5p.create(h5py.h5p.FILE_ACCESS)
+            file_access_property_list.set_fapl_core(backing_store=False)
+            file_access_property_list.set_file_image(body)
+
+            file_id_args = {
+                'fapl': file_access_property_list,
+                'flags': h5py.h5f.ACC_RDONLY,
+                'name': b'this should never matter',
+            }
+            return file_id_args
+
+        h5_file_args = {
+            'backing_store': False,
+            'driver': 'core',
+            'mode': 'r',
+        }
+
+        file_id_args_model = helper_settings(model_obj)
+
         if self._model is None:
-            with BytesIO as f:
-                self.s3_resource.Bucket(s3_settings.S3_BUCKET).download_fileobj(model_file, f)
-                f.seek(0)
-                self._model = models.load_model(f)
+            with contextlib.closing(h5py.h5f.open(**file_id_args_model)) as file_id:
+                with h5py.File(file_id, **h5_file_args) as h5_file:
+                    self._model = models.load_model(h5_file)
+            # with BytesIO() as f:
+            #     self.s3_resource.Bucket(s3_settings.S3_BUCKET).download_fileobj(model_file, f)
+            #     f.seek(0)
+            #     self._model = f.read()
             common.logger.info(f'Model loaded successfully')
 
-        with BytesIO as f:
-            self.s3_resource.Bucket(s3_settings.S3_BUCKET).download_fileobj(tokenizer_file, f)
-            f.seek(0)
-            self._tokenizer = pickle.load(f)
+        self._tokenizer = pickle.loads(tokenizer_obj)
+        # with BytesIO() as f:
+        #     self.s3_resource.Bucket(s3_settings.S3_BUCKET).download_fileobj(tokenizer_file, f)
+        #     f.seek(0)
+        #     self._tokenizer = pickle.load(f)
         common.logger.info(f'Tokenizer loaded successfully')
 
     @property
