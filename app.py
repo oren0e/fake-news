@@ -4,17 +4,22 @@ from backend.ft_model import NNClassifier
 
 app = Flask(__name__)
 
+@app.before_first_request
+def _init_classifier() -> None:
+    global model
+    model = NNClassifier()
+    model.initial_load()
+
 @app.route('/predict', methods=['POST'])
 def make_prediction() -> dict:
     data: str = request.get_data().decode('utf-8')
 
     assert type(data) == str
-    model = NNClassifier(data)
+    model.get_data(data)
     output = model.predict()
 
     return jsonify(result=output)
 
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
