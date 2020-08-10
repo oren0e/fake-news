@@ -8,6 +8,7 @@ The data for training this model is taken from: https://www.kaggle.com/clmentbis
 The app uses Flask as the backend service. Model is stored on S3.
 
 ## Usage
+Go to https://fake-news-ap.herokuapp.com/
 ![https://fake-news-ap.herokuapp.com/](demo/fake_news_gif.gif)
 
 ## TODO
