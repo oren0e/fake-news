@@ -36,11 +36,11 @@ function App() {
   return (
     <Box maxW="960px" mx="auto" padding="15px">
       <Text fontSize="5xl" as="h1">
-        Welcome to Fake News
+        Fake News Classifier
       </Text>
 
       <Text fontSize="xl" as="p">
-        Some fancy tagline here
+        Paste a news story to see how likely it is fake
       </Text>
 
       <Box mt="30px" mb="30px">
