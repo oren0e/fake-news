@@ -36,8 +36,9 @@ class NNClassifier:
         return pred_sequence
 
     def load_model(self) -> None:
-        self._model = models.load_model(self._model_path)
-        common.logger.info(f'Model loaded successfully from {self._model_path}')
+        if self._model is None:
+            self._model = models.load_model(self._model_path)
+            common.logger.info(f'Model loaded successfully from {self._model_path}')
 
         with open('./data/tokenizer.pickle', 'rb') as f:
             self._tokenizer = pickle.load(f)
@@ -45,6 +46,9 @@ class NNClassifier:
 
     @property
     def model(self) -> models.Model:
+        '''
+        This is a method for future development
+        '''
         if self._model is None:
             self.load_model()
         return self._model
