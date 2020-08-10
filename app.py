@@ -1,8 +1,6 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 
 from backend.ft_model import NNClassifier
-
-PORT: int = 9000
 
 app = Flask(__name__)
 
@@ -19,4 +17,4 @@ def make_prediction() -> dict:
 
 
 if __name__ == '__main__':
-    app.run(port=PORT, debug=False)
+    app.run(debug=False)
