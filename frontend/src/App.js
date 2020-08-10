@@ -22,11 +22,13 @@ function App() {
         text,
       })
       .then(function (response) {
+        console.log(response);
         // assumes that response is a number between 0.0-1.0
         setAnalyzeResult(response.data.result);
         setIsSubmitting(false);
       })
       .catch(function (error) {
+        console.log(error);
         setIsSubmitting(false);
       });
   };
