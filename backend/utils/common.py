@@ -2,10 +2,6 @@ import datetime
 import logging
 import os
 
-# s3 settings
-AWS_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET = os.environ.get('AWS_SECRET_ACCESS_KEY')
-
 # general
 PROJECT_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..')
 
