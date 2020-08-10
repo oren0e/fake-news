@@ -1,4 +1,7 @@
+boto3==1.14.38
+boto3-stubs==1.14.38.0
 Flask==1.1.2
+h5py==2.10.0
 numpy==1.18.4
 tensorflow-estimator==2.2.0
 tensorflow-cpu==2.2.0
